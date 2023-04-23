@@ -75,7 +75,7 @@ userSchema.methods.createHashToken = function (type) {
     const hashedToken = crypto.randomBytes(32).toString("hex")
     if (type === "activateToken") {
         this.activate_token = crypto.createHash("sha256").update(hashedToken).digest("hex")
-        this.activate_token_expire = Date.now() + 10 * 60 * 1000 // 10 minutes
+        this.activate_token_expire = Date.now() + 10 * 60 * 1000000 // 10 minutes
     }
 
     if (type === "resetToken") {

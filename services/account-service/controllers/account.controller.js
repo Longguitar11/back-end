@@ -29,7 +29,7 @@ const signup = async (req, res, next) => {
 
         // response create account success
         res.status(200).json({
-            status: "succes",
+            status: "success",
             message: "Create account succesfully, check your email to activate account",
         })
 
@@ -74,7 +74,7 @@ const activateAccount = async (req, res, next) => {
         await user.save()
 
         res.status(201).json({
-            status: "succes",
+            status: "success",
             message: "Your account has been activated, now can login",
         })
     } catch (error) {
@@ -108,7 +108,7 @@ const signin = async (req, res, next) => {
         const accessToken = genJwtToken({ id: user.id }, "accessToken", "1h")
 
         res.status(200).json({
-            status: "succes",
+            status: "success",
             data: { ...user._doc, accessToken },
         })
     } catch (error) {
@@ -129,7 +129,7 @@ const forgotPassword = async (req, res, next) => {
         await user.save()
 
         res.status(200).json({
-            status: "succes",
+            status: "success",
             message: "Check your email to create new password",
             resetToken, // just for postman testing, then remove
         })
@@ -170,7 +170,7 @@ const createNewPassword = async (req, res, next) => {
         await user.save()
 
         res.status(200).json({
-            status: "succes",
+            status: "success",
             message: "Your new password has been created, now can signin",
         })
     } catch (error) {

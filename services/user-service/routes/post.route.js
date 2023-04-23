@@ -1,6 +1,7 @@
 const express = require("express")
 const postController = require("../controllers/post.controller")
 const commentController = require("../controllers/comment.controller")
+const tagController = require("../controllers/tag.controller")
 const { verifyToken } = require("../utils/verifyToken")
 const router = express.Router()
 
@@ -43,5 +44,8 @@ router.post("/:postID/comments/:commentID/like", commentController.likeComment)
 router.post("/:postID/comments/:commentID/unlike", commentController.unlikeComment)
 
 router.delete("/:postID/comments/:commentID", commentController.deleteComment)
+
+// tag routes
+router.get("/tags", tagController.getTags)
 
 module.exports = router
