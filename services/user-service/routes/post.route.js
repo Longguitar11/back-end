@@ -48,4 +48,8 @@ router.delete("/:postID/comments/:commentID", commentController.deleteComment)
 // tag routes
 router.get("/tags", tagController.getTags)
 
+router.post("/:tagID/follow", tagController.followTag)
+
+router.post("/:tagID/unfollow", tagController.unfollowTag)
+
 module.exports = router

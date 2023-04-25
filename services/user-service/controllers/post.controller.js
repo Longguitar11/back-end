@@ -29,6 +29,21 @@ const createPost = async (req, res, next) => {
         })
         await newPost.save()
 
+        // increase count post in tag
+        tags.forEach(async (tagId) => {
+            const tag = await Tag.updateOne(
+                { _id: tagId },
+                {
+                    $inc: { count_post: 1 },
+                },
+            )
+
+            if (tag.modifiedCount === 0) {
+                return next(new BaseError(400, "Fail to increase post count in tags, unkown error"))
+            }
+        });
+
+
         res.status(200).json({
             status: "success",
             message: "Post created",
