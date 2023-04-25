@@ -59,17 +59,22 @@ const getPostsRelevant = async (req, res, next) => {
     // maybe then change to get user following post
     try {
         const { id } = req.user
-        const { limit = 10 } = req.query
+        const { page = 1 } = req.query
+        const perPage = 10
 
         // get user following tags
-        let followingTags = await User.findById(id, "following_tags")
+        let { following_tags: followingTags } = await User.findById(id, "following_tags")
 
         // if there no tags set some tags has many post
         if (followingTags.length === 0) {
-            followingTags = await Tag.find().sort({ count_post: -1 }).limit(5).select("_id")
+            // get random 5 tags
+            followingTags = await Tag.aggregate([{ $sample: { size: 5 } }])
+            // followingTags = await Tag.find().sort({ count_post: -1 }).limit(5).select("_id")
         }
 
         const posts = await Post.find({ tags: { $in: followingTags } })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
             .populate("author", "username avatar")
             .populate("tags", "name")
             .sort({ createdAt: -1 })
@@ -86,10 +91,13 @@ const getPostsRelevant = async (req, res, next) => {
 
 const getPostsLatest = async (req, res, next) => {
     try {
-        const { limit = 10 } = req.query
+        const { page = 1 } = req.query
+        const perPage = 10
+
         const posts = await Post.find()
             .sort({ createdAt: "desc" })
-            .limit(limit)
+            .skip((page - 1) * perPage)
+            .limit(perPage)
             .populate("author", "username avatar")
             .populate("tags", "name")
 
@@ -106,7 +114,9 @@ const getPostsLatest = async (req, res, next) => {
 // filter by week, month, year
 const getPostsTop = async (req, res, next) => {
     try {
-        const { limit, filter } = req.query
+        const perPage = 10
+        const { page, filter = "week" } = req.query
+
         const queryObj = {
             week: { createdAt: { $gte: startOfWeekUtc, $lte: endOfWeekUtc } },
             month: { createdAt: { $gte: startOfMonthUtc, $lte: endOfMonthUtc } },
@@ -115,8 +125,8 @@ const getPostsTop = async (req, res, next) => {
 
         const posts = await Post.find(queryObj[filter])
             .sort({ count: -1 })
-            .limit(limit)
-            .populate("post_id", "author title tags time_to_read")
+            .skip((page - 1) * perPage)
+            .limit(perPage)
             .populate("author", "username avatar")
             .populate("tags", "name")
 

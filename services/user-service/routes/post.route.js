@@ -12,7 +12,7 @@ router.get("/latest", postController.getPostsLatest)
 router.use(verifyToken)
 router.post("/", postController.createPost)
 
-router.get("/revelant", postController.getPostsRelevant)
+router.get("/relevant", postController.getPostsRelevant)
 
 router.get("/bookmarks", postController.getBookmarks)
 
