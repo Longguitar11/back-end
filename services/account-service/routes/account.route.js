@@ -50,7 +50,7 @@ router.post(
     accountController.createNewPassword
 )
 
-router.use(verifyToken)
+// router.use(verifyToken)
 router.post(
     "/change-password",
     celebrate({ body: changePasswordSchema }),

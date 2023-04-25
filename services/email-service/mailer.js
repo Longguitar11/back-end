@@ -100,6 +100,10 @@ const getMailoptions = (data) => {
 const handleSendMail = async (data) => {
   try {
     const mailOptions = getMailoptions(data)
+    console.log(
+      "🚀 ~ file: mailer.js:103 ~ handleSendMail ~ mailOptions:",
+      mailOptions
+    )
 
     await send_mail(mailOptions)
   } catch (error) {

@@ -130,6 +130,17 @@ const getPostsTop = async (req, res, next) => {
     }
 }
 
+// ----------------------- GET POST DETAIL -----------------------------------
+// const getPostDetail = async (req, res, next) => {
+//     try {
+//         const {postID} = req.params
+
+//         const post = await Post.findById(postID).populate("author", "username avatar").populate("tags", "name")
+//     } catch (error) {
+//         next(new BaseError(500, error.message))
+//     }
+// }
+
 // ----------------------- UPDATE POST (CONTENT/TITLE) -----------------------------------
 const updatePost = async (req, res, next) => {
     try {

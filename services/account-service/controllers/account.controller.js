@@ -152,6 +152,11 @@ const forgotPassword = async (req, res, next) => {
 const createNewPassword = async (req, res, next) => {
     try {
         const { password, token } = req.body
+        console.log("🚀 ~ file: account.controller.js:155 ~ createNewPassword ~ token:", token)
+        console.log(
+            "🚀 ~ file: account.controller.js:155 ~ createNewPassword ~ password:",
+            password
+        )
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
         const user = await User.findOne({ reset_pwd_token: hashedToken })
 
@@ -174,7 +179,7 @@ const createNewPassword = async (req, res, next) => {
             message: "Your new password has been created, now can signin",
         })
     } catch (error) {
-        next(new BaseError(500, error.message))
+        return next(new BaseError(500, error.message))
     }
 }
 
