@@ -49,6 +49,85 @@ const createPost = async (req, res, next) => {
             message: "Post created",
             data: { newPost },
         })
+
+        // increase count post in tag
+        tags.forEach(async (tagId) => {
+            const tag = await Tag.updateOne(
+                { _id: tagId },
+                {
+                    $inc: { count_post: 1 },
+                }
+            )
+
+            if (tag.modifiedCount === 0) {
+                return next(new BaseError(400, "Fail to increase post count in tags, unkown error"))
+            }
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// -----------------------GET POST CONTENT-----------------------------------
+const getPostContent = async (req, res, next) => {
+    try {
+        const { postID } = req.params
+
+        // get post
+        const post = await Post.findOne({ _id: postID })
+            .populate("author", "username avatar")
+            .populate("tags", "name")
+
+        if (!post) {
+            return next(new BaseError(404, "Post not found"))
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Post fetched",
+            data: { post },
+        })
+    } catch (error) {
+        next(new BaseError(500, error.message))
+    }
+}
+
+// -----------------------GET RELATED POSTS-----------------------------------
+const getRelatedPosts = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const { postID } = req.params
+
+        // get post tags
+        const { tags } = await Post.findById(postID, "tags")
+
+        // get related posts randomly, populate author and tags
+        const relatedPosts = await Post.aggregate([
+            { $match: { tags: { $in: tags } } },
+            { $sample: { size: 5 } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "author",
+                    foreignField: "_id",
+                    as: "author",
+                },
+            },
+            {
+                $lookup: {
+                    from: "tags",
+                    localField: "tags",
+                    foreignField: "_id",
+                    as: "tags",
+                },
+            },
+        ])
+
+        res.status(200).json({
+            status: "success",
+            message: "Related posts fetched",
+            data: { relatedPosts },
+        })
     } catch (error) {
         next(new BaseError(500, error.message))
     }
@@ -400,4 +479,6 @@ module.exports = {
     unbookmarkPost,
     bookmarkPost,
     getBookmarks,
+    getRelatedPosts,
+    getPostContent,
 }

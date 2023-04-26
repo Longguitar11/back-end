@@ -14,7 +14,11 @@ router.post("/", postController.createPost)
 
 router.get("/relevant", postController.getPostsRelevant)
 
+router.get("/:postID/related", postController.getRelatedPosts)
+
 router.get("/bookmarks", postController.getBookmarks)
+
+router.get("/:postID", postController.getPostContent)
 
 router.patch("/:postID", postController.updatePost)
 

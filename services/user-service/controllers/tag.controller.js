@@ -70,7 +70,6 @@ const unfollowTag = async (req, res, next) => {
             }
         )
 
-
         // has error or tag not found
         if (tag.modifiedCount === 0) {
             return next(new BaseError(400, "Fail to unfollow tag, unkown error"))
