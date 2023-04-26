@@ -216,6 +216,7 @@ const likePost = async (req, res, next) => {
         if (post.modifiedCount === 0) {
             return next(new BaseError(400, "Fail to like post, unkown error"))
         }
+        
 
         res.status(200).json({
             status: "success",
